@@ -1,54 +1,56 @@
-# Warpnet SRE Challenge
+---
 
-Welcome to the Site Reliability Engineering (SRE) challenge, where your SRE skills will be put to the test. You'll deploy an application in both a traditional and Kubernetes environment, showcasing your ability to orchestrate complex systems. From defining Kubernetes manifests to fixing bugs and ensuring good observability, this challenge mirrors real-world scenarios encountered by our SREs. Whether you're a seasoned professional or a newcomer eager to explore complex cloud environments, this challenge offers platform to demonstrate your expertise.
+### 1. Deploy the app on a traditional VM
 
-## Instructions
+To deploy the basic application on a traditional virtual environment I’ve chosen for a containerised approach. Specifically, I’ll be using docker to achieve said deployment. 
 
-Your goal is to deploy the included Python application directly in a local Kubernetes cluster. The application may contain some bugs and vulnerabilities.
+Docker is in my eyes the best approach with it being lightweight, easily manageable and extendable. With docker images you can create small deployments which are easily manageable and have a small footprint when it comes to needed resources whilst using and storing them. I’m more familiar with containerised deployments via Docker too, which is why it has my preference.
 
-You can use to following command to start the application:
+---
+
+### 2. Look into the application code and make adjustments that you think are necessary
+
+We’re starting off with a basic Flask config that has almost no security implementations what so ever. Since it’s been a while since I’ve read up on the most recent security implementations I’ll use sources like OWASP to create a baseline Flask configuration that is safe with todays standards:
+
+- [**A01:2021-Broken Access Control**](https://owasp.org/Top10/A01_2021-Broken_Access_Control/)
+- [**A02:2021-Cryptographic Failures**](https://owasp.org/Top10/A02_2021-Cryptographic_Failures/)
+- [**A03:2021-Injection**](https://owasp.org/Top10/A03_2021-Injection/)
+- [**A04:2021-Insecure Design**](https://owasp.org/Top10/A04_2021-Insecure_Design/)
+- [**A05:2021-Security Misconfiguration**](https://owasp.org/Top10/A05_2021-Security_Misconfiguration/)
+- [**A06:2021-Vulnerable and Outdated Components**](https://owasp.org/Top10/A06_2021-Vulnerable_and_Outdated_Components/)
+- [**A07:2021-Identification and Authentication Failures**](https://owasp.org/Top10/A07_2021-Identification_and_Authentication_Failures/)
+- [**A08:2021-Software and Data Integrity Failures**](https://owasp.org/Top10/A08_2021-Software_and_Data_Integrity_Failures/)
+- [**A09:2021-Security Logging and Monitoring Failures**](https://owasp.org/Top10/A09_2021-Security_Logging_and_Monitoring_Failures/)
+- [**A10:2021-Server-Side Request Forgery**](https://owasp.org/Top10/A10_2021-Server-Side_Request_Forgery_%28SSRF%29/)
+
+From top to bottom:
+
+- Added security features such as; CSRF tokens, password encryption
+- Added usage of environment variables
+- Added user session management, authentication and access control
+- Improved database management by implementing SQL-Alchemy
+- Added user register functionality
+
+Since this is a small web application with not that many endpoints and functionalities some security implementations were not added. If the project had more resources or endpoints to take care of I would’ve added better structure and readability by refactoring functions into separate files and by using blueprints to load everything from __init__. Things like HTTPS, a Flask Talisman for CSP and HTTPS-only and clickjacking were not added since this project is being served over HTTP.
+
+---
+
+### Deploy the app on a Kubernetes environment
+
+To run the new Flask webserver in a Kubernetes environment, run:
+
 ```bash
-cd app
-pip install -r requirements.txt
-flask --app application run
+minikube start
 ```
 
-Test the application by opening [http://127.0.0.1:5000](http://127.0.0.1:5000) in your browser.
+Create the resource (pod) by applying the current configuration:
 
-You're allowed to modify the included application as you see fit.
+```bash
+kubectl apply -f app/srechallenge.yaml 
+```
 
-## Objectives
+Start a pod that serves the Flask website:
 
-In this challenge, you'll navigate through a series of objectives designed to assess your proficiency as an SRE. Each objective is crafted to highlight specific aspects of your skills.
-
-- Functionality
-- Simplicity
-- Readability
-- Extensibility
-- Maintainability
-- Observability
-- Security
-
-As you embark on the SRE challenge, we want to emphasize that the objective is not to stress about achieving perfection on every front. Our primary goal is to gain insights into you current skillset and problem-solving approach within the realm of Site Reliability Engineering. Recognize that the challenge may be multifaceted, and it's perfectly acceptable to prioritize certain objectives over others. This challenge is an opportunity for you to demonstrate your existing skills and learning, providing valuable insights into your capabilities as an SRE professional.
-
-## Challenge
-
-A lot of enterprise organizations make the transition from traditional virtual machines to deployments in a Kubernetes based infrastructure.
-Automation, security, architecture, quality of code are main subjects during this transition. This challenge is all about simulating that. There are a three main assignments that you need to do during this challenge:
-
-- Deploy the app on a traditional VM.
-- Look into the application code and make adjustments that you think are necessary.
-- Deploy the app on a Kubernetes environment.
-
-You are free to choose which tools and methods you use during this challenge. Keep in mind that you should show the listed aspects under [Objectives](#objectives) in your solution.
-
-## Tips and tricks
-
-Below you'll find a few quick tips to get your environment up and running. If you are more comfortable using other kind of tools, feel free to use them!
-
-- [Vagrant](https://www.vagrantup.com/): a tool that allows you to quickly setup a dev environment based on virtual machines.
-- [MiniKube](https://minikube.sigs.k8s.io/docs/): in general Kubernetes requires a lot of resources, MiniKube helps you setting up a local cluster on your workstation.
-
-## Get Involved
-
-[Explore open jobs at Warpnet](https://warpnet.nl/jobs/) or take a look at our [featured projects](https://github.com/warpnet). Visit [warpnet.nl](https://warpnet.nl/) to learn more!
+```bash
+minikube service flask-service
+```
