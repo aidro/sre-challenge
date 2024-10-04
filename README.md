@@ -31,7 +31,7 @@ From top to bottom:
 - Improved database management by implementing SQL-Alchemy
 - Added user register functionality
 
-Since this is a small web application with not that many endpoints and functionalities some security implementations were not added. If the project had more resources or endpoints to take care of I would’ve added better structure and readability by refactoring functions into separate files and by using blueprints to load everything from __init__. Things like HTTPS, a Flask Talisman for CSP and HTTPS-only and clickjacking were not added since this project is being served over HTTP.
+Since this is a small web application with not that many endpoints and functionalities some security implementations were not added. If the project had more resources or endpoints to take care of I would’ve added better structure and readability by refactoring functions into separate files and by using blueprints to load everything from an init like structure. Things like HTTPS, a Flask Talisman for CSP and HTTPS-only and clickjacking were not added since this project is being served over HTTP.
 
 ---
 
