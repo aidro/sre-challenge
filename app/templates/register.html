@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+<main class="container form-signin text-center">
+<div class="column is-4 is-offset-4">
+    <div class="box">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="">
+                {{ messages[0] }}. Go to <a href="{{ url_for('register') }}">login page</a>.
+            </div>
+        {% endif %}
+        {% endwith %}
+        <form method="POST" action="/register">
+            <h1 class="h3 mb-3 fw-normal">Register</h1>
+            <div class="form-floating">
+                <input class="form-control" id="username" type="text" name="username" placeholder="Username" autofocus="">
+            </div>
+            <div class="form-floating">
+                <input class="form-control" id="password" type="password" name="password" placeholder="Password" required>
+            </div>
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            <button class="w-100 btn btn-lg btn-primary" type="submit">Sign in</button>
+        </form>
+    </div>
+</div>
+</main>
+{% endblock %}

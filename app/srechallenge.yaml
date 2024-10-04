@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: warpnet-srechallenge
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: warpnet-srechallenge
+  template:
+    metadata:
+      labels:
+        app: warpnet-srechallenge
+    spec:
+      containers:
+      - name: warpnet-srechallenge
+        image: aidro/warpnet-srechallenge:latest
+        ports:
+        - containerPort: 5050
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: flask-service
+spec:
+  type: NodePort
+  selector:
+    app: warpnet-srechallenge
+  ports:
+  - protocol: TCP
+    port: 5050
+    targetPort: 5050

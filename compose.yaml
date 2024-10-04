@@ -1,0 +1,7 @@
+version: "3"
+services:
+  warpnet-srechallenge:
+    build:
+      context: .
+    ports:
+      - "5050:5050"
